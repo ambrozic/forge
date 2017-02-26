@@ -1,0 +1,40 @@
+forge:
+  verbose: true
+
+services:
+
+  db:
+    ssh:
+      dsn: root@db:2222
+      key: /path/to/ssh_private_key
+
+    pipelines:
+      info:
+        - date
+        - df -h
+        - ps -Ao user,uid,pid,pcpu,pmem,comm --sort=-pmem | head -n 6
+        - ps -Ao user,uid,pid,pcpu,pmem,comm --sort=-pcpu | head -n 6
+        - docker container ls
+        - docker image ls
+        - docker volume ls
+
+      backup:
+        - cp /path/to/file.db /backup/to/file.db
+
+      test:
+        - ls /path/to/config.file | echo "ok"
+
+  web:
+    ssh:
+      dsn: root@web:2222
+      key: /path/to/ssh_private_key
+
+    pipelines:
+      deploy:
+        - echo "do some deployment stuff"
+
+      backup:
+        - cp /path/to/file.db /backup/to/file.db
+
+      test:
+        - ls /path/to/config.file | echo "ok"
